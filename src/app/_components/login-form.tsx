@@ -3,47 +3,37 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const router = useRouter();
-  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const registerUser = api.auth.register.useMutation({
+  const loginUser = api.auth.login.useMutation({
     onSuccess: () => {
-      router.push("/verify-email")
+      alert("Login success!!!!");
+      router.push("/");
     },
     onError: () => {
-      alert("Errorrr");
+      console.log(error);
     },
   });
 
+  const {
+    data,
+    error,
+    mutate: login,
+    isPending,
+    isSuccess,
+    isError,
+  } = loginUser;
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    registerUser.mutate({ name, email, password });
+    login({ email, password });
   };
 
   return (
     <form onSubmit={handleSubmit} className="grid gap-4">
-      <input
-        onChange={(e) => setName(e.target.value)}
-        id="name"
-        placeholder="name"
-        type="text"
-        className={`
-                      peer
-                      w-full
-                      rounded-md
-                      border-2 
-                      bg-white 
-                       p-2
-                      font-light
-                      outline-none
-                      transition
-                      disabled:cursor-not-allowed
-                      disabled:opacity-70
-                    `}
-      />
       <input
         onChange={(e) => setEmail(e.target.value)}
         id="email"
@@ -87,13 +77,11 @@ const RegisterForm = () => {
         type="submit"
         className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
       >
-        {registerUser.isPending ? "Submitting..." : "CREATE ACCOUNT"}
+        {isPending ? "Submitting..." : "CREATE ACCOUNT"}
       </button>
-      {registerUser.error && (
-        <p className="text-red-500">{registerUser.error.message}.</p>
-      )}
+      {error && <p className="text-red-500">{error.message}.</p>}
     </form>
   );
 };
 
-export default RegisterForm;
+export default LoginForm;

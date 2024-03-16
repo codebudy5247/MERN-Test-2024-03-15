@@ -20,14 +20,15 @@ model Post {
 }
 
 model User {
-    id               String                 @id @default(uuid())
-    name             String
-    email            String                 @unique
-    password         String
-    isEmailVerified  Boolean                @default(false)
-    createdAt        DateTime               @default(now())
-    updatedAt        DateTime               @updatedAt
-    selectedCategory UserSelectedCategory[]
+    id                    String                 @id @default(uuid())
+    name                  String
+    email                 String                 @unique
+    password              String
+    isEmailVerified       Boolean                @default(false)
+    emailVerificationCode String?
+    createdAt             DateTime               @default(now())
+    updatedAt             DateTime               @updatedAt
+    selectedCategory      UserSelectedCategory[]
 
     @@map("users")
 }
