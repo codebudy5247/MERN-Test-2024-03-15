@@ -12,6 +12,7 @@ const RegisterForm = () => {
   const registerUser = api.auth.register.useMutation({
     onSuccess: () => {
       router.push("/verify-email")
+      localStorage.setItem("UserEmail",email)
     },
     onError: () => {
       alert("Errorrr");

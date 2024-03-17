@@ -7,14 +7,6 @@ import sendMail from "~/utils/send-mail";
 const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
 export const authRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-
   register: publicProcedure
     .input(
       z.object({
@@ -73,12 +65,29 @@ export const authRouter = createTRPCRouter({
   verifyEmail: publicProcedure
     .input(
       z.object({
+        email: z.string({ required_error: "Email is required" }).email(),
         verificationCode: z
           .string({ required_error: "Verification Code is required" })
           .min(6),
       }),
     )
     .mutation(async ({ ctx, input }) => {
-        
+      let user = await ctx.db.user.findFirst({ where: { email: input.email } });
+      if (!user) throw Error("User not found");
+      console.log(user.emailVerificationCode, otp, "from trpc.....");
+      if (user.emailVerificationCode !== input.verificationCode)
+        throw Error("Invalid OTP");
+
+      // Update isEmailVerified to true && emailVerificationCode = null
+      const updatedUser = await ctx.db.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          isEmailVerified: true,
+          emailVerificationCode: null,
+        },
+      });
+      return updatedUser;
     }),
 });
