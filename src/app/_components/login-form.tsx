@@ -2,30 +2,30 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
+import toast from "react-hot-toast";
 
 const LoginForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const loginUser = api.auth.login.useMutation({
+  const { mutate: login } = api.auth.login.useMutation({
+    onMutate() {
+      setSubmitting(true);
+    },
+    onSettled() {
+      setSubmitting(false);
+    },
     onSuccess: () => {
-      alert("Login success!!!!");
+      toast.success('Login successfully');
       router.push("/");
     },
-    onError: () => {
-      console.log(error);
+    onError: (error) => {
+      toast.error(error.message);
+      console.log(error.message);
     },
   });
-
-  const {
-    data,
-    error,
-    mutate: login,
-    isPending,
-    isSuccess,
-    isError,
-  } = loginUser;
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -77,9 +77,8 @@ const LoginForm = () => {
         type="submit"
         className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
       >
-        {isPending ? "Submitting..." : "CREATE ACCOUNT"}
+        {submitting ? "Submitting..." : "LOGIN"}
       </button>
-      {error && <p className="text-red-500">{error.message}.</p>}
     </form>
   );
 };
