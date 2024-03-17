@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const RegisterForm = () => {
       setSubmitting(false);
     },
     onSuccess: () => {
-      toast.success('Registered successfully');
+      toast.success("Registered successfully");
       router.push("/verify-email");
       localStorage.setItem("UserEmail", email);
     },
@@ -35,7 +36,7 @@ const RegisterForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="grid gap-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <input
         onChange={(e) => setName(e.target.value)}
         id="name"
@@ -96,13 +97,17 @@ const RegisterForm = () => {
 
       <button
         type="submit"
-        className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
+        className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-2 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
       >
         {submitting ? "Submitting..." : "CREATE ACCOUNT"}
       </button>
-      {/* {error && (
-        <p className="text-red-500">{error.message}.</p>
-      )} */}
+
+      <div className="flex items-center justify-center gap-2">
+        <h6 className="text-sm text-gray-400">Have an Account?</h6>
+        <Link href="/login">
+          <h6 className="text-md cursor-pointer">LOGIN</h6>
+        </Link>
+      </div>
     </form>
   );
 };

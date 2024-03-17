@@ -3,7 +3,7 @@ import "~/styles/globals.css";
 import { Inter } from "next/font/google";
 
 import { TRPCReactProvider } from "~/trpc/react";
-import { Toaster } from 'react-hot-toast';
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,8 +25,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider>
-          {children}
-          <Toaster />
+          <div className="flex min-h-screen flex-col items-center justify-center">
+            <div className="container flex w-2/6 flex-col items-center justify-center rounded-lg border-4 border-solid border-[#F5F5F5] px-10 py-14">
+              {children}
+              <Toaster />
+            </div>
+          </div>
         </TRPCReactProvider>
       </body>
     </html>

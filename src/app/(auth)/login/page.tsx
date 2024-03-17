@@ -1,11 +1,18 @@
-import LoginForm from "../../_components/login-form"
+import LoginForm from "../../_components/login-form";
 
 const LoginPage = () => {
   return (
-    <div className="mt-2 p-5">
-        <LoginForm />
-    </div>
-  )
-}
+    <div>
+      <h2 className="text-center text-3xl font-semibold">Login</h2>
 
-export default LoginPage
+      <h2 className="mt-4 mb-2 text-center text-2xl font-semibold">
+        Welcome back to ECOMMERCE
+      </h2>
+
+      <h6 className="mb-4 text-center text-sm">The next gen business marketplace</h6>
+      <LoginForm />
+    </div>
+  );
+};
+
+export default LoginPage;

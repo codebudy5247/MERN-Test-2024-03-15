@@ -19,7 +19,7 @@ const VerifyEmail = () => {
       setSubmitting(false);
     },
     onSuccess: () => {
-      toast.success('Success!!!');
+      toast.success("Success!!!");
       router.push("/login");
     },
     onError: (error) => {
@@ -34,12 +34,18 @@ const VerifyEmail = () => {
 
   return (
     <div>
-      <h2 className="font-bold">Verify Email</h2>
-      <h3>{email}</h3>
+      <h2 className="mb-5 text-center text-2xl font-semibold">
+        Verify your email
+      </h2>
+      <h2 className="mb-1 text-center text-md">
+        Enetr the 6 digit code you have recieved on
+      </h2>
+      <h2 className="mb-5 text-center text-md font-semibold">{email}</h2>
+      <h3>Code</h3>
       <OtpInput length={6} onOtpSubmit={onOtpSubmit} />
       <button
         type="button"
-        className="group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-4 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
+        className="mt-5 group inline-flex w-full items-center justify-center rounded-md bg-gray-900 px-6 py-2 text-lg font-semibold text-white transition-all duration-200 ease-in-out hover:bg-gray-800 focus:shadow"
       >
         {submitting ? "Veryfying..." : "VERIFY"}
       </button>
