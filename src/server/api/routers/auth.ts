@@ -1,8 +1,14 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
+import {
+  createTRPCRouter,
+  publicProcedure,
+  protectedProcedure,
+} from "~/server/api/trpc";
 import { hashSync, compareSync } from "bcrypt";
 import * as jwt from "jsonwebtoken";
 import sendMail from "~/utils/send-mail";
+import { TRPCError } from "@trpc/server";
+import { cookies } from "next/headers";
 
 const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -51,11 +57,19 @@ export const authRouter = createTRPCRouter({
       if (!compareSync(input.password, user.password))
         throw Error("Incorrect password");
       const token = jwt.sign(
-        {
-          userId: user.id,
-        },
+        { sub: user.id },
         process.env.JWT_SECRET as string,
+        {
+          expiresIn: 60 * 60,
+        },
       );
+      const cookieOptions = {
+        httpOnly: true,
+        path: "/",
+        secure: process.env.NODE_ENV !== "development",
+        maxAge: 60 * 60,
+      };
+      cookies().set("token", token, cookieOptions);
       return {
         user,
         token,
@@ -90,4 +104,14 @@ export const authRouter = createTRPCRouter({
       });
       return updatedUser;
     }),
+  me: protectedProcedure.query(({ ctx }) => {
+    try {
+      return ctx.user;
+    } catch (err: any) {
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: err.message,
+      });
+    }
+  }),
 });
