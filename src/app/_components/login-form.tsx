@@ -4,12 +4,15 @@ import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import useAuthStore from "~/hooks/useAuth";
 
 const LoginForm = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  const updateUser = useAuthStore((state) => state.updateUser);
 
   const { mutate: login } = api.auth.login.useMutation({
     onMutate() {
@@ -18,9 +21,14 @@ const LoginForm = () => {
     onSettled() {
       setSubmitting(false);
     },
-    onSuccess: () => {
-      toast.success('Login successfully');
-      router.push("/");
+    onSuccess: (data: any) => {
+      toast.success("Login successfully");
+      updateUser(data.user);
+      if (data.user.isEmailVerified) {
+        router.push("/");
+      } else {
+        router.push("/verify-email");
+      }
     },
     onError: (error) => {
       toast.error(error.message);

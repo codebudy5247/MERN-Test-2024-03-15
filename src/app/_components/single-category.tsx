@@ -3,6 +3,7 @@ import { Category } from "@prisma/client";
 import React, { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 interface Props {
   category: Category;
@@ -17,8 +18,10 @@ const SelectCategory = ({ category }: Props) => {
   const { mutate: Addcategory } = api.category.selectCategory.useMutation({
     onSuccess: (data) => {
       console.log(data);
+      toast.success("Added!")
     },
     onError: (error) => {
+      toast.error(error.message)
       console.log(error.message);
     },
   });
@@ -27,10 +30,12 @@ const SelectCategory = ({ category }: Props) => {
     api.category.removeCategory.useMutation({
       onSuccess: (data) => {
         console.log(data);
+        toast.success("Removed!")
         router.refresh();
       },
       onError: (error) => {
         console.log(error.message);
+        toast.error(error.message)
       },
     });
 

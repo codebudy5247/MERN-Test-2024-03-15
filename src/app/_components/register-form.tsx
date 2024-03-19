@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { api } from "~/trpc/react";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import useAuthStore from "~/hooks/useAuth";
+
 
 const RegisterForm = () => {
   const router = useRouter();
@@ -12,6 +14,8 @@ const RegisterForm = () => {
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const updateUser = useAuthStore((state) => state.updateUser);
+
   const { mutate: register } = api.auth.register.useMutation({
     onMutate() {
       setSubmitting(true);
@@ -19,10 +23,10 @@ const RegisterForm = () => {
     onSettled() {
       setSubmitting(false);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      updateUser(data);
       toast.success("Registered successfully");
       router.push("/verify-email");
-      localStorage.setItem("UserEmail", email);
     },
     onError: (error) => {
       toast.error(error.message);

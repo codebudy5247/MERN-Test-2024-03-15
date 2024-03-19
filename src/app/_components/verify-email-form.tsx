@@ -4,12 +4,16 @@ import { useRouter } from "next/navigation";
 import OtpInput from "./otp-input";
 import { api } from "~/trpc/react";
 import toast from "react-hot-toast";
+import useAuthStore from "~/hooks/useAuth";
+
 
 const VerifyEmail = () => {
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
 
-  let email = localStorage.getItem("UserEmail") as string;
+  const user = useAuthStore((state) => state.user)
+
+  let email = user?.email as string
 
   const { mutate: verify } = api.auth.verifyEmail.useMutation({
     onMutate() {

@@ -1,6 +1,12 @@
 import LoginForm from "../../_components/login-form";
+import { redirect } from "next/navigation";
+import { api } from "~/trpc/server";
 
-const LoginPage = () => {
+const LoginPage = async() => {
+  const session = await api.auth.me();
+  if (session.user !== null) {
+    redirect(`/`);
+  }
   return (
     <div>
       <h2 className="text-center text-3xl font-semibold">Login</h2>
