@@ -1,6 +1,6 @@
 "use client";
-import { Category } from "@prisma/client";
-import SelectCategory from "./select-category";
+import { Category, UserSelectedCategory } from "@prisma/client";
+import SelectCategory from "./single-category";
 import usePagination from "~/hooks/usePagination";
 import {
   ChevronsLeft,
@@ -32,7 +32,9 @@ function CategoryList({ categories }: Props) {
       {currentData &&
         currentData.map((cat: any) => (
           <div key={cat.id}>
-            <SelectCategory category={cat} />
+            <SelectCategory
+              category={cat}
+            />
           </div>
         ))}
 

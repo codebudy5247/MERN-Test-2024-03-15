@@ -5,7 +5,7 @@ import CategoryList from "./_components/category-list";
 export default async function Home() {
   const session = await api.auth.me();
   const categories = await api.category.list();
-
+  
   if (session.user === null) {
     redirect(`/login`);
   }
